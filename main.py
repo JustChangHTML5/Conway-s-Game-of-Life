@@ -8,7 +8,7 @@ mixer = pygame.mixer
 mixer.init()
 pygame.init()
 
-size = (1400, 800)
+size = (gv.width * 10, gv.height * 10)
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 color = (98, 159, 134)
@@ -16,8 +16,8 @@ color2 = (157, 96, 121)
 
 gv.Game = Matrix()
 gv.GameF = Matrix()
-gv.Game.build(140, 80)
-gv.GameF.build(140, 80)
+gv.Game.build(gv.width, gv.height)
+gv.GameF.build(gv.width, gv.height)
 gv.Game.NodesData = gv.GameF.NodesData
 gv.isRunning = False
 
@@ -66,9 +66,6 @@ def update():
     gv.Game.transmit(gv.GameF)
     gv.frame = False
 
-
-
-
 def keyUpdate():
     Mx, My = 0, 0
     for event in pygame.event.get():
@@ -105,10 +102,19 @@ def keyUpdate():
             pygame.display.quit(), sys.exit()
 
 def draw():
-    for x in range(0, 140):
-        for y in range(0, 80):
+    for x in range(0, gv.width):
+        for y in range(0, gv.height):
             if gv.GameF.get(x + 1, y + 1).key == 1:
                 pygame.draw.rect(screen, color2, (x * 10, y * 10, 10, 10))
+
+    for column in range(1, gv.width):
+        pygame.draw.line(screen, "black", (column * 10, 0), (column * 10, gv.height * 10))
+
+    for row in range(1, gv.height):
+        pygame.draw.line(screen, "black", (0, row * 10), (gv.width * 10, row * 10))
+
+    fpsDisplay = gv.font.render(str(int(clock.get_fps())) + " FPS", 1, pygame.Color("white"))
+    screen.blit(fpsDisplay, (5, 0))
 
 mixer.music.load("ConwaysMusecore.mp3")
 

@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='Conway\'s Game of Life',
-    version = '1.1.0',
+    version = '1.3.0',
     packages = [''],
     url = '',
     license = '',
@@ -11,4 +11,8 @@ setup(
     description = 'Conway\'s Game of Life'
 )
 
-#1.10, music
+#1.1.0, music
+
+#1.2.0, FPS display
+
+#1.3.0, Grid an size change
