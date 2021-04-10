@@ -102,6 +102,12 @@ def keyUpdate():
                 else:
                     gv.showGrid = True
 
+            if event.key == pygame.K_s:
+                gv.GameF.save("ConwaysGameOfLife")
+
+            if event.key == pygame.K_l:
+                gv.GameF = gv.GameF.load("ConwaysGameOfLife")
+
             if event.key == pygame.K_F1:
                 if gv.showFPS:
                     gv.showFPS = False
@@ -116,11 +122,15 @@ def keyUpdate():
             pygame.display.quit(), sys.exit()
 
 def draw():
+    """
     for x in range(0, gv.width):
         for y in range(0, gv.height):
             if gv.GameF.get(x + 1, y + 1).key == 1:
                 pygame.draw.rect(screen, color2, (x * gv.sizeFactor, y * gv.sizeFactor, gv.sizeFactor, gv.sizeFactor))
-
+    """
+    for node in gv.GameF.Nodes:
+        if gv.GameF.get(node.Xm, node.Ym).key == 1:
+            pygame.draw.rect(screen, color2, ((node.Xm - 1) * gv.sizeFactor, (node.Ym - 1) * gv.sizeFactor, gv.sizeFactor, gv.sizeFactor))
     if gv.showGrid:
         for column in range(1, gv.width):
             pygame.draw.line(screen, "black", (column * gv.sizeFactor, 0), (column * gv.sizeFactor, gv.height * gv.sizeFactor))

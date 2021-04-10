@@ -69,8 +69,9 @@ class Matrix:
 
     def save(self, name):
         print("Saving...")
+        self.NodesData.clear()
         for node in self.Nodes:
-            self.NodesData.append(node[0], node[1], node[2])
+            self.NodesData.append((node.key, node.Xm, node.Ym))
         matrixF = open((str(name) + ".txt"), "w")
         matrixF.write(repr(self.NodesData))
         matrixF.close()
@@ -82,10 +83,12 @@ class Matrix:
         matrixF.close()
         data = literal_eval(data)
         loadMatrix = Matrix()
+        loadMatrix.size, loadMatrix.sizeX, loadMatrix.sizeY = self.size, self.sizeX, self.sizeY
         loadMatrix.NodesData = data
         for node in data:
             newNode = MatrixNode(node[0], node[1], node[2])
             loadMatrix.Nodes.append(newNode)
 
         loadMatrix.sizeX, loadMatrix.sizeY = data[len(data) - 1][1], data[len(data) - 1][2]
+        print("loaded")
         return loadMatrix
