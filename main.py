@@ -8,7 +8,7 @@ mixer = pygame.mixer
 mixer.init()
 pygame.init()
 
-size = (gv.width * 10, gv.height * 10)
+size = (gv.width * gv.sizeFactor, gv.height * gv.sizeFactor)
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 color = (98, 159, 134)
@@ -71,7 +71,7 @@ def keyUpdate():
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             (Mx, My) = pygame.mouse.get_pos()
-            Nx, Ny = math.ceil(Mx / 10), math.ceil(My / 10)
+            Nx, Ny = math.ceil(Mx / gv.sizeFactor), math.ceil(My / gv.sizeFactor)
             if gv.GameF.get(Nx, Ny).key == 1:
                 gv.GameF.get(Nx, Ny).key = 0
 
@@ -95,6 +95,20 @@ def keyUpdate():
                 for node in nodes:
                     node.key = 0
 
+            if event.key == pygame.K_g:
+                if gv.showGrid:
+                    gv.showGrid = False
+
+                else:
+                    gv.showGrid = True
+
+            if event.key == pygame.K_F1:
+                if gv.showFPS:
+                    gv.showFPS = False
+
+                else:
+                    gv.showFPS = True
+
             if event.key == pygame.K_ESCAPE:
                 pygame.display.quit(), sys.exit()
 
@@ -105,16 +119,27 @@ def draw():
     for x in range(0, gv.width):
         for y in range(0, gv.height):
             if gv.GameF.get(x + 1, y + 1).key == 1:
-                pygame.draw.rect(screen, color2, (x * 10, y * 10, 10, 10))
+                pygame.draw.rect(screen, color2, (x * gv.sizeFactor, y * gv.sizeFactor, gv.sizeFactor, gv.sizeFactor))
 
-    for column in range(1, gv.width):
-        pygame.draw.line(screen, "black", (column * 10, 0), (column * 10, gv.height * 10))
+    if gv.showGrid:
+        for column in range(1, gv.width):
+            pygame.draw.line(screen, "black", (column * gv.sizeFactor, 0), (column * gv.sizeFactor, gv.height * gv.sizeFactor))
 
-    for row in range(1, gv.height):
-        pygame.draw.line(screen, "black", (0, row * 10), (gv.width * 10, row * 10))
+        for row in range(1, gv.height):
+            pygame.draw.line(screen, "black", (0, row * gv.sizeFactor), (gv.width * gv.sizeFactor, row * gv.sizeFactor))
 
-    fpsDisplay = gv.font.render(str(int(clock.get_fps())) + " FPS", 1, pygame.Color("white"))
-    screen.blit(fpsDisplay, (5, 0))
+    if gv.showFPS:
+        fps = str(int(clock.get_fps()))
+        if int(fps) < 20:
+            fpsDisplay = gv.font.render(fps + " FPS", 1, pygame.Color("red"))
+
+        elif int(fps) >= 40:
+            fpsDisplay = gv.font.render(fps + " FPS", 1, pygame.Color("green"))
+
+        else:
+            fpsDisplay = gv.font.render(fps + " FPS", 1, pygame.Color("yellow"))
+
+        screen.blit(fpsDisplay, (5, 0))
 
 mixer.music.load("ConwaysMusecore.mp3")
 

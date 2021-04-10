@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='Conway\'s Game of Life',
-    version = '1.3.1',
+    version = '1.3.2',
     packages = [''],
     url = '',
     license = '',
@@ -15,6 +15,8 @@ setup(
 
 #1.2.0, FPS display
 
-#1.3.0, Grid an size change
+#1.3.0, Grid an size changes
 
 #1.3.1, Minor Display Changes
+
+#1.3.2, Togglable FPS and Grid
