@@ -3,3 +3,4 @@ rm -rf dist build
 pyinstaller --onefile -w main.py
 copy *.mp3 dist
 copy *.gif dist
+copy *.txt dist

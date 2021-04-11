@@ -10,7 +10,10 @@ isRunning = None
 frame = False
 showGrid = True
 showFPS = True
+generations = 0
+showGenerations = True
 pygame.display.set_caption("Conway's Game of Life", "GOL")
 Icon = pygame.image.load("Game_of_life_Icon.gif")
 pygame.display.set_icon(Icon)
-font = pygame.font.SysFont("comicsansms", 18)
+font = pygame.font.SysFont("comicsansms", 17)
+font2 = pygame.font.SysFont("Ariel", 34)

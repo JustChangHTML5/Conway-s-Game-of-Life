@@ -64,6 +64,7 @@ def update():
             node.key = 1
 
     gv.Game.transmit(gv.GameF)
+    gv.generations += 1
     gv.frame = False
 
 def keyUpdate():
@@ -92,6 +93,7 @@ def keyUpdate():
                 gv.isRunning = False
 
             if event.key == pygame.K_c:
+                gv.generations = 0
                 nodes = gv.GameF.find(1)
                 for node in nodes:
                     node.key = 0
@@ -103,8 +105,21 @@ def keyUpdate():
                 else:
                     gv.showGrid = True
 
+            if event.key == pygame.K_e:
+                if gv.showGenerations:
+                    gv.showGenerations = False
+
+                else:
+                    gv.showGenerations = True
+
             if event.key == pygame.K_s:
                 gv.GameF.save("ConwaysGameOfLife")
+
+            if event.key == pygame.K_n:
+                mixer.music.stop()
+
+            if event.key == pygame.K_p:
+                mixer.music.play(-1)
 
             if event.key == pygame.K_l:
                 gv.GameF = gv.GameF.load("ConwaysGameOfLife")
@@ -158,6 +173,10 @@ def draw():
             fpsDisplay = gv.font.render(fps + " FPS", 1, pygame.Color("yellow"))
 
         screen.blit(fpsDisplay, (5, 0))
+
+    if gv.showGenerations:
+        generationDisplay = gv.font2.render(str(gv.generations) + " Generations", 1, pygame.Color("gray"))
+        screen.blit(generationDisplay, (gv.width * gv.sizeFactor / 2 - 50, 0))
 
 mixer.music.load("ConwaysMusecore.mp3")
 
