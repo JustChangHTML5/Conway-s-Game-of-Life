@@ -9,12 +9,14 @@ mixer.init()
 pygame.init()
 
 size = (gv.width * gv.sizeFactor, gv.height * gv.sizeFactor)
-screen = pygame.display.set_mode(size)
+screen = pygame.display.set_mode(size, pygame.DOUBLEBUF)
 clock = pygame.time.Clock()
-color = (150, 150, 150)
-color2 = (230, 230, 0)
+#color = (150, 150, 150)
+#color2 = (230, 230, 0)
 #color = (98, 159, 134)
 #color2 = (157, 96, 121)
+color = (255, 255, 255)
+color2 = (0, 0, 0)
 
 gv.Game = Matrix()
 gv.GameF = Matrix()
@@ -22,6 +24,23 @@ gv.Game.build(gv.width, gv.height)
 gv.GameF.build(gv.width, gv.height)
 gv.Game.NodesData = gv.GameF.NodesData
 gv.isRunning = False
+
+def blit_text(surface, text, pos, font, color=pygame.Color('Purple')):
+    words = [word.split(' ') for word in text.splitlines()]  # 2D array where each row is a list of words.
+    space = font.size(' ')[0]  # The width of a space.
+    max_width, max_height = surface.get_size()
+    x, y = pos
+    for line in words:
+        for word in line:
+            word_surface = font.render(word, 0, color)
+            word_width, word_height = word_surface.get_size()
+            if x + word_width >= max_width:
+                x = pos[0]  # Reset the x.
+                y += word_height  # Start on new row.
+            surface.blit(word_surface, (x, y))
+            x += word_width + space
+        x = pos[0]  # Reset the x.
+        y += word_height  # Start on new row.
 
 def check(node):
     neighbors = 0
@@ -70,7 +89,7 @@ def update():
     gv.frame = False
 
 def keyUpdate():
-    global screen, size
+    global screen, size, color, color2
     Mx, My = 0, 0
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -114,8 +133,29 @@ def keyUpdate():
                 else:
                     gv.showGenerations = True
 
+            if event.key == pygame.K_i:
+                if color == (0, 0, 0):
+                    color = (255, 255, 255)
+
+                else:
+                    color = (0, 0, 0)
+
+                if color2 == (0, 0, 0):
+                    color2 = (255, 255, 255)
+
+                else:
+                    color2 = (0, 0, 0)
+
+            if event.key == pygame.K_h:
+                if gv.showInstructions:
+                    gv.showInstructions = False
+
+                else:
+                    gv.showInstructions = True
+
             if event.key == pygame.K_s:
                 gv.GameF.save("ConwaysGameOfLife")
+                gv.GameF.save("ConwaysGameOfLifeBackup")
 
             if event.key == pygame.K_n:
                 mixer.music.stop()
@@ -124,7 +164,11 @@ def keyUpdate():
                 mixer.music.play(-1)
 
             if event.key == pygame.K_l:
-                gv.GameF = gv.GameF.load("ConwaysGameOfLife")
+                try:
+                    gv.GameF = gv.GameF.load("ConwaysGameOfLife")
+
+                except:
+                    gv.GameF = gv.GameF.load("ConwaysGameOfLifeBackup")
                 gv.Game.transmit(gv.GameF)
                 gv.Game.NodesData = gv.GameF.NodesData
                 gv.Game.sizeX, gv.Game.sizeY, gv.Game.size = gv.GameF.sizeX, gv.GameF.sizeY, gv.GameF.size
@@ -147,6 +191,12 @@ def keyUpdate():
         elif event.type == pygame.QUIT:
             pygame.display.quit(), sys.exit()
 
+    (Mx, My) = pygame.mouse.get_pos()
+    Mx, My = math.floor(Mx / gv.sizeFactor) * gv.sizeFactor, math.floor(My / gv.sizeFactor) * gv.sizeFactor
+    pointer = pygame.Surface((gv.sizeFactor + 1, gv.sizeFactor + 1), pygame.SRCALPHA)
+    pointer.fill((0, 0, 255, 128))
+    screen.blit(pointer, (Mx, My))
+
 def draw():
     """
     for x in range(0, gv.width):
@@ -159,10 +209,10 @@ def draw():
             pygame.draw.rect(screen, color2, ((node.Xm - 1) * gv.sizeFactor, (node.Ym - 1) * gv.sizeFactor, gv.sizeFactor, gv.sizeFactor))
     if gv.showGrid:
         for column in range(1, gv.width):
-            pygame.draw.line(screen, "black", (column * gv.sizeFactor, 0), (column * gv.sizeFactor, gv.height * gv.sizeFactor))
+            pygame.draw.line(screen, "gray", (column * gv.sizeFactor, 0), (column * gv.sizeFactor, gv.height * gv.sizeFactor))
 
         for row in range(1, gv.height):
-            pygame.draw.line(screen, "black", (0, row * gv.sizeFactor), (gv.width * gv.sizeFactor, row * gv.sizeFactor))
+            pygame.draw.line(screen, "gray", (0, row * gv.sizeFactor), (gv.width * gv.sizeFactor, row * gv.sizeFactor))
 
     if gv.showFPS:
         fps = str(int(clock.get_fps()))
@@ -180,6 +230,10 @@ def draw():
     if gv.showGenerations:
         generationDisplay = gv.font2.render(str(gv.generations) + " Generations", 1, pygame.Color("gray"))
         screen.blit(generationDisplay, (gv.width * gv.sizeFactor / 2 - 50, 0))
+
+    if gv.showInstructions:
+        Instructions = " Escape to close,\n Click to place a cell or destroy a cell, Spacebar to start the game,\n f to go frame by frame,\n s to save,\n l to load,\n hit c to clear all cells,\n hit e, g, or f1 to toggle the generation display, grid or frames per second, hit n to stop the music, hit p to start the music again, hit i to invert the color scheme,\n and finally, hit h to toggle the instructions."
+        blit_text(screen, Instructions, (gv.width - 100, 20), gv.font)
 
 mixer.music.load("ConwaysMusecore.mp3")
 

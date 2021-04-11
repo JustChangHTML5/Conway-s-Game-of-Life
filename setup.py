@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='Conway\'s Game of Life',
-    version = '1.6.1',
+    version = '1.7.0',
     packages = [''],
     url = 'https://sites.google.com/view/ivanchang/conways-game-of-life?authuser=0',
     license = '',
@@ -30,3 +30,7 @@ setup(
 #1.6.0, Generation Display
 
 #1.6.1, Color Scheme changes
+
+#1.6.2, Pointer and inverted scheme
+
+#1.7.0, Instructions
