@@ -11,8 +11,10 @@ pygame.init()
 size = (gv.width * gv.sizeFactor, gv.height * gv.sizeFactor)
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
-color = (98, 159, 134)
-color2 = (157, 96, 121)
+color = (150, 150, 150)
+color2 = (230, 230, 0)
+#color = (98, 159, 134)
+#color2 = (157, 96, 121)
 
 gv.Game = Matrix()
 gv.GameF = Matrix()
@@ -130,6 +132,7 @@ def keyUpdate():
                 gv.height = gv.GameF.sizeY
                 size = (gv.width * gv.sizeFactor, gv.height * gv.sizeFactor)
                 screen = pygame.display.set_mode(size)
+                gv.generations = 0
 
             if event.key == pygame.K_F1:
                 if gv.showFPS:

@@ -2,9 +2,9 @@ from distutils.core import setup
 
 setup(
     name='Conway\'s Game of Life',
-    version = '1.6.0',
+    version = '1.6.1',
     packages = [''],
-    url = '',
+    url = 'https://sites.google.com/view/ivanchang/conways-game-of-life?authuser=0',
     license = '',
     author = 'Ivan Chang',
     author_email = 'ivanchang309@gmail.com',
@@ -28,3 +28,5 @@ setup(
 #1.5.1, Togglable music
 
 #1.6.0, Generation Display
+
+#1.6.1, Color Scheme changes
