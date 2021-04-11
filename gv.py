@@ -4,8 +4,12 @@ Game = None
 GameF = None
 width = 105
 height = 60
+ssx = 0
+ssy = 0
+#screen shift x and screen shift y
 #There is a smallest size
 sizeFactor = 16
+scroll = 1.05
 isRunning = None
 frame = False
 showGrid = True
