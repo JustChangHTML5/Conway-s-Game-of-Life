@@ -10,6 +10,8 @@ hit g and f1 to toggle grid and fps respectively
 hit n to stop the music
 hit p to start the music again
 hit e to toggle the generation display
+hit h to toggle the Instruction display
+hit i to invert the color scheme
 hit s to save it to "ConwaysGameOfLife.txt"
 hit l to load the file "ConwaysGameOfLife.txt" into the Game]
 hit escape to close
