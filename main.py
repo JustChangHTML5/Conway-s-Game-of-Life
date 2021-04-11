@@ -67,6 +67,7 @@ def update():
     gv.frame = False
 
 def keyUpdate():
+    global screen, size
     Mx, My = 0, 0
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -107,6 +108,13 @@ def keyUpdate():
 
             if event.key == pygame.K_l:
                 gv.GameF = gv.GameF.load("ConwaysGameOfLife")
+                gv.Game.transmit(gv.GameF)
+                gv.Game.NodesData = gv.GameF.NodesData
+                gv.Game.sizeX, gv.Game.sizeY, gv.Game.size = gv.GameF.sizeX, gv.GameF.sizeY, gv.GameF.size
+                gv.width = gv.GameF.sizeX
+                gv.height = gv.GameF.sizeY
+                size = (gv.width * gv.sizeFactor, gv.height * gv.sizeFactor)
+                screen = pygame.display.set_mode(size)
 
             if event.key == pygame.K_F1:
                 if gv.showFPS:

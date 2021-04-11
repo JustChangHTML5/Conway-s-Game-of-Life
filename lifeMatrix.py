@@ -64,8 +64,14 @@ class Matrix:
         return keyNodes
 
     def transmit(self, Matrix):
-        for nodeIndex in range(0, len(Matrix.Nodes) - 1):
-            self.Nodes[nodeIndex].transmit(Matrix.Nodes[nodeIndex])
+        if len(self.Nodes) > len(Matrix.Nodes):
+            self.Nodes.clear()
+        for nodeIndex in range(0, len(Matrix.Nodes)):
+            try:
+                self.Nodes[nodeIndex].transmit(Matrix.Nodes[nodeIndex])
+
+            except:
+                self.Nodes.append(MatrixNode(Matrix.Nodes[nodeIndex].key, Matrix.Nodes[nodeIndex].Xm, Matrix.Nodes[nodeIndex].Ym))
 
     def save(self, name):
         print("Saving...")
@@ -83,7 +89,7 @@ class Matrix:
         matrixF.close()
         data = literal_eval(data)
         loadMatrix = Matrix()
-        loadMatrix.size, loadMatrix.sizeX, loadMatrix.sizeY = self.size, self.sizeX, self.sizeY
+        loadMatrix.size, loadMatrix.sizeX, loadMatrix.sizeY = data[len(data) - 1][1] * data[len(data) - 1][2], data[len(data) - 1][1], data[len(data) - 1][2]
         loadMatrix.NodesData = data
         for node in data:
             newNode = MatrixNode(node[0], node[1], node[2])
