@@ -95,12 +95,18 @@ def keyUpdate():
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
                 gv.sizeFactor *= gv.scroll
+                Mx, My = pygame.mouse.get_pos()
+                gv.ssx, gv.ssy = (Mx - (gv.width * gv.sizeFactor / 2)), (My - (gv.height * gv.sizeFactor / 2))
+                #correct this
 
             if event.button == 5:
                 gv.sizeFactor /= gv.scroll
+                Mx, My = pygame.mouse.get_pos()
+                gv.ssx, gv.ssy = (Mx - (gv.width * gv.sizeFactor / 2)), (My - (gv.height * gv.sizeFactor / 2))
 
             if event.button == 1 or event.button == 3:
                 (Mx, My) = pygame.mouse.get_pos()
+                Mx, My = Mx - gv.ssx, My - gv.ssy
                 Nx, Ny = math.ceil(Mx / gv.sizeFactor), math.ceil(My / gv.sizeFactor)
                 if gv.GameF.get(Nx, Ny).key == 1:
                     gv.GameF.get(Nx, Ny).key = 0
@@ -115,6 +121,9 @@ def keyUpdate():
 
                 else:
                     gv.isRunning = False
+
+            if event.key == pygame.K_r:
+                gv.ssx, gv.ssy, gv.sizeFactor = 0, 0, 16
 
             if event.key == pygame.K_f:
                 gv.frame = True
@@ -196,11 +205,12 @@ def keyUpdate():
         elif event.type == pygame.QUIT:
             pygame.display.quit(), sys.exit()
 
-    (Mx, My) = pygame.mouse.get_pos()
-    Mx, My = math.floor(Mx / gv.sizeFactor) * gv.sizeFactor, math.floor(My / gv.sizeFactor) * gv.sizeFactor
+    """(Mx, My) = pygame.mouse.get_pos()
+    changex, changey = (gv.ssx / gv.sizeFactor - math.floor(gv.ssx / gv.sizeFactor)) * gv.sizeFactor - gv.sizeFactor, (gv.ssy / gv.sizeFactor - math.floor(gv.ssy / gv.sizeFactor)) * gv.sizeFactor
+    Mx, My = math.floor(Mx / gv.sizeFactor) * gv.sizeFactor + changex, math.floor(My / gv.sizeFactor) * gv.sizeFactor + changey
     pointer = pygame.Surface((gv.sizeFactor + 1, gv.sizeFactor + 1), pygame.SRCALPHA)
     pointer.fill((0, 0, 255, 128))
-    screen.blit(pointer, (Mx + gv.ssx, My + gv.ssy))
+    screen.blit(pointer, (Mx, My ))"""
 
 def draw():
     """
@@ -213,10 +223,10 @@ def draw():
         if gv.GameF.get(node.Xm, node.Ym).key == 1:
             pygame.draw.rect(screen, color2, ((node.Xm - 1) * gv.sizeFactor + gv.ssx, (node.Ym - 1) * gv.sizeFactor  + gv.ssy, gv.sizeFactor + 1, gv.sizeFactor + 1))
     if gv.showGrid:
-        for column in range(1, gv.width):
+        for column in range(0, gv.width + 1):
             pygame.draw.line(screen, "gray", (column * gv.sizeFactor + gv.ssx, 0 + gv.ssy), (column * gv.sizeFactor + gv.ssx, gv.height * gv.sizeFactor + gv.ssy))
 
-        for row in range(1, gv.height):
+        for row in range(0, gv.height + 1):
             pygame.draw.line(screen, "gray", (0 + gv.ssx, row * gv.sizeFactor + gv.ssy), (gv.width * gv.sizeFactor + gv.ssx, row * gv.sizeFactor + gv.ssy))
 
     if gv.showFPS:
