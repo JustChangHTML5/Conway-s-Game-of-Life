@@ -43,3 +43,4 @@ setup(
 
 #1.8.2, Mobile Mode
 
+#1.8.3, Resizable screen
