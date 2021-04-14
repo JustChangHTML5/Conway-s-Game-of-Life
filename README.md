@@ -2,7 +2,8 @@
 Conway's Game of life
 
 SO... just Conway's Game of Life.
-READ THE INSTRUCTIONS
+
+READ THE INGAME INSTRUCTIONS
 
 (The Default Save file is a glider gun)
 
