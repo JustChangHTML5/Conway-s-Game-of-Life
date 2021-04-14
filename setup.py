@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='Conway\'s Game of Life',
-    version = '1.8.1',
+    version = '1.8.2',
     packages = [''],
     url = 'https://sites.google.com/view/ivanchang/conways-game-of-life?authuser=0',
     license = '',
@@ -40,3 +40,6 @@ setup(
 #1.8.0, Bad zooming
 
 #1.8.1, Glitchy zomming, no pointer because of bugs
+
+#1.8.2, Mobile Mode
+

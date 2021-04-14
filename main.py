@@ -9,7 +9,8 @@ mixer.init()
 pygame.init()
 
 size = (gv.width * gv.sizeFactor, gv.height * gv.sizeFactor)
-screen = pygame.display.set_mode(size, pygame.DOUBLEBUF)
+screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+gv.resize = [size[0], size[1]]
 clock = pygame.time.Clock()
 #color = (150, 150, 150)
 #color2 = (230, 230, 0)
@@ -105,14 +106,33 @@ def keyUpdate():
                 gv.ssx, gv.ssy = (Mx - (gv.width * gv.sizeFactor / 2)), (My - (gv.height * gv.sizeFactor / 2))
 
             if event.button == 1 or event.button == 3:
-                (Mx, My) = pygame.mouse.get_pos()
-                Mx, My = Mx - gv.ssx, My - gv.ssy
-                Nx, Ny = math.ceil(Mx / gv.sizeFactor), math.ceil(My / gv.sizeFactor)
-                if gv.GameF.get(Nx, Ny).key == 1:
-                    gv.GameF.get(Nx, Ny).key = 0
+                if gv.mobile == True:
+                    if pygame.mouse.get_pos() >= (size[0] - 100, 0) and pygame.mouse.get_pos() <= (size[0], 50):
+                        if gv.isRunning:
+                            gv.isRunning = False
+
+                        else:
+                            gv.isRunning = True
+
+                    else:
+                        (Mx, My) = pygame.mouse.get_pos()
+                        Mx, My = Mx - gv.ssx, My - gv.ssy
+                        Nx, Ny = math.ceil(Mx / gv.sizeFactor), math.ceil(My / gv.sizeFactor)
+                        if gv.GameF.get(Nx, Ny).key == 1:
+                            gv.GameF.get(Nx, Ny).key = 0
+
+                        else:
+                            gv.GameF.get(Nx, Ny).key = 1
 
                 else:
-                    gv.GameF.get(Nx, Ny).key = 1
+                    (Mx, My) = pygame.mouse.get_pos()
+                    Mx, My = Mx - gv.ssx, My - gv.ssy
+                    Nx, Ny = math.ceil(Mx / gv.sizeFactor), math.ceil(My / gv.sizeFactor)
+                    if gv.GameF.get(Nx, Ny).key == 1:
+                        gv.GameF.get(Nx, Ny).key = 0
+
+                    else:
+                        gv.GameF.get(Nx, Ny).key = 1
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -123,7 +143,7 @@ def keyUpdate():
                     gv.isRunning = False
 
             if event.key == pygame.K_r:
-                gv.ssx, gv.ssy, gv.sizeFactor = 0, 0, 16
+                gv.ssx, gv.ssy, gv.sizeFactor = (screen.get_width() - (16 * gv.width)) / 2, (screen.get_height() - (16 * gv.height)) / 2, 16
 
             if event.key == pygame.K_f:
                 gv.frame = True
@@ -169,6 +189,13 @@ def keyUpdate():
                 else:
                     gv.showInstructions = True
 
+            if event.key == pygame.K_m:
+                if gv.mobile:
+                    gv.mobile = False
+
+                else:
+                    gv.mobile = True
+
             if event.key == pygame.K_s:
                 gv.GameF.save("ConwaysGameOfLife")
                 gv.GameF.save("ConwaysGameOfLifeBackup")
@@ -205,6 +232,10 @@ def keyUpdate():
         elif event.type == pygame.QUIT:
             pygame.display.quit(), sys.exit()
 
+    if gv.resize != list(screen.get_size()):
+        gv.ssx, gv.ssy, gv.sizeFactor = (screen.get_width() - (16 * gv.width)) / 2, (screen.get_height() - (16 * gv.height)) / 2, 16
+        gv.resize = list(screen.get_size())
+
     """(Mx, My) = pygame.mouse.get_pos()
     changex, changey = (gv.ssx / gv.sizeFactor - math.floor(gv.ssx / gv.sizeFactor)) * gv.sizeFactor - gv.sizeFactor, (gv.ssy / gv.sizeFactor - math.floor(gv.ssy / gv.sizeFactor)) * gv.sizeFactor
     Mx, My = math.floor(Mx / gv.sizeFactor) * gv.sizeFactor + changex, math.floor(My / gv.sizeFactor) * gv.sizeFactor + changey
@@ -221,13 +252,18 @@ def draw():
     """
     for node in gv.GameF.Nodes:
         if gv.GameF.get(node.Xm, node.Ym).key == 1:
-            pygame.draw.rect(screen, color2, ((node.Xm - 1) * gv.sizeFactor + gv.ssx, (node.Ym - 1) * gv.sizeFactor  + gv.ssy, gv.sizeFactor + 1, gv.sizeFactor + 1))
+            pygame.draw.rect(screen, color2, ((node.Xm - 1) * gv.sizeFactor + gv.ssx, (node.Ym - 1) * gv.sizeFactor + gv.ssy, gv.sizeFactor + 1, gv.sizeFactor + 1))
     if gv.showGrid:
-        for column in range(0, gv.width + 1):
+        for column in range(1, gv.width):
             pygame.draw.line(screen, "gray", (column * gv.sizeFactor + gv.ssx, 0 + gv.ssy), (column * gv.sizeFactor + gv.ssx, gv.height * gv.sizeFactor + gv.ssy))
 
-        for row in range(0, gv.height + 1):
+        for row in range(1, gv.height):
             pygame.draw.line(screen, "gray", (0 + gv.ssx, row * gv.sizeFactor + gv.ssy), (gv.width * gv.sizeFactor + gv.ssx, row * gv.sizeFactor + gv.ssy))
+
+    pygame.draw.line(screen, "gray", (0 + gv.ssx, 0 + gv.ssy), (0 + gv.ssx, gv.height * gv.sizeFactor + gv.ssy))
+    pygame.draw.line(screen, "gray", (gv.width * gv.sizeFactor + gv.ssx, 0 + gv.ssy), (gv.width * gv.sizeFactor + gv.ssx, gv.height * gv.sizeFactor + gv.ssy))
+    pygame.draw.line(screen, "gray", (0 + gv.ssx, 0 + gv.ssy), (gv.width * gv.sizeFactor + gv.ssx, 0 + gv.ssy))
+    pygame.draw.line(screen, "gray", (0 + gv.ssx, gv.height * gv.sizeFactor + gv.ssy), (gv.width * gv.sizeFactor + gv.ssx, gv.height * gv.sizeFactor + gv.ssy))
 
     if gv.showFPS:
         fps = str(int(clock.get_fps()))
@@ -244,11 +280,14 @@ def draw():
 
     if gv.showGenerations:
         generationDisplay = gv.font2.render(str(gv.generations) + " Generations", 1, pygame.Color("gray"))
-        screen.blit(generationDisplay, (gv.width * gv.sizeFactor / 2 - 50 + gv.ssx, 0 + gv.ssy))
+        screen.blit(generationDisplay, (size[0] / 2 - 50, 0))
 
     if gv.showInstructions:
-        Instructions = " Escape to close,\n Click to place a cell or destroy a cell, Spacebar to start the game,\n f to go frame by frame,\n s to save,\n l to load,\n hit c to clear all cells,\n hit e, g, or f1 to toggle the generation display, grid or frames per second, hit n to stop the music, hit p to start the music again, hit i to invert the color scheme,\n scroll to zoom,\n and finally, hit h to toggle the instructions."
+        Instructions = " Escape to close,\n Click to place a cell or destroy a cell, Spacebar to start the game,\n f to go frame by frame,\n s to save,\n l to load,\n hit c to clear all cells,\n hit e, g, or f1 to toggle the generation display, grid or frames per second, hit n to stop the music, hit p to start the music again, hit i to invert the color scheme,\n scroll to zoom,\n hit r to reset zoom scale,\n hit m to stop being in mobile mode,\n hit the blue button to start or stop,\n and finally, hit h to toggle the instructions."
         blit_text(screen, Instructions, (gv.width - 100, 20), gv.font)
+
+    if gv.mobile == True:
+        pygame.draw.rect(screen, (0, 50, 230), (size[0] - 100, 0, 100, 50))
 
 mixer.music.load("ConwaysMusecore.mp3")
 
@@ -258,7 +297,7 @@ mixer.music.play(-1)
 
 def main():
     while True:
-        clock.tick(120)
+        clock.tick(70)
         screen.fill(color)
         if gv.isRunning or gv.frame:
             update()

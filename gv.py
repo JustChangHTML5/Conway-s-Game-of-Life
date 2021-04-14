@@ -2,6 +2,7 @@ import pygame
 pygame.init()
 Game = None
 GameF = None
+resize = []
 width = 105
 height = 60
 ssx = 0
@@ -17,6 +18,7 @@ showFPS = True
 generations = 0
 showGenerations = True
 showInstructions = True
+mobile = True
 pygame.display.set_caption("Conway's Game of Life", "GOL")
 Icon = pygame.image.load("Game_of_life_Icon.gif")
 pygame.display.set_icon(Icon)
