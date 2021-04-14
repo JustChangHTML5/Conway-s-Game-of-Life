@@ -18,6 +18,7 @@ clock = pygame.time.Clock()
 #color2 = (157, 96, 121)
 color = (255, 255, 255)
 color2 = (0, 0, 0)
+color3 = (0, 128, 128)
 
 gv.Game = Matrix()
 gv.GameF = Matrix()
@@ -45,28 +46,28 @@ def blit_text(surface, text, pos, font, color=pygame.Color('Purple')):
 
 def check(node):
     neighbors = 0
-    if gv.Game.get(node.Xm - 1, node.Ym + 1).key == 1:
+    if gv.Game.get(node.Xm - 1, node.Ym + 1).key > 0:
         neighbors += 1
 
-    if gv.Game.get(node.Xm, node.Ym + 1).key == 1:
+    if gv.Game.get(node.Xm, node.Ym + 1).key > 0:
         neighbors += 1
 
-    if gv.Game.get(node.Xm + 1, node.Ym + 1).key == 1:
+    if gv.Game.get(node.Xm + 1, node.Ym + 1).key > 0:
         neighbors += 1
 
-    if gv.Game.get(node.Xm - 1, node.Ym).key == 1:
+    if gv.Game.get(node.Xm - 1, node.Ym).key > 0:
         neighbors += 1
 
-    if gv.Game.get(node.Xm + 1, node.Ym).key == 1:
+    if gv.Game.get(node.Xm + 1, node.Ym).key > 0:
         neighbors += 1
 
-    if gv.Game.get(node.Xm - 1, node.Ym - 1).key == 1:
+    if gv.Game.get(node.Xm - 1, node.Ym - 1).key > 0:
         neighbors += 1
 
-    if gv.Game.get(node.Xm, node.Ym - 1).key == 1:
+    if gv.Game.get(node.Xm, node.Ym - 1).key > 0:
         neighbors += 1
 
-    if gv.Game.get(node.Xm + 1, node.Ym - 1).key == 1:
+    if gv.Game.get(node.Xm + 1, node.Ym - 1).key > 0:
         neighbors += 1
 
     return neighbors
@@ -75,15 +76,16 @@ def check(node):
 def update():
     gv.Game.transmit(gv.GameF)
     for node in gv.GameF.Nodes:
-        neighbors = check(gv.Game.get(node.Xm, node.Ym))
-        if neighbors < 2:
-            node.key = 0
+        if node.key != 2:
+            neighbors = check(gv.Game.get(node.Xm, node.Ym))
+            if neighbors < 2:
+                node.key = 0
 
-        elif neighbors > 3:
-            node.key = 0
+            elif neighbors > 3:
+                node.key = 0
 
-        if neighbors == 3:
-            node.key = 1
+            if neighbors == 3:
+                node.key = 1
 
     gv.Game.transmit(gv.GameF)
     gv.generations += 1
@@ -105,7 +107,7 @@ def keyUpdate():
                 Mx, My = pygame.mouse.get_pos()
                 gv.ssx, gv.ssy = (Mx - (gv.width * gv.sizeFactor / 2)), (My - (gv.height * gv.sizeFactor / 2))
 
-            if event.button == 1 or event.button == 3:
+            if event.button == 1:
                 if gv.mobile == True:
                     if pygame.mouse.get_pos() >= (size[0] - 100, 0) and pygame.mouse.get_pos() <= (size[0], 50):
                         if gv.isRunning:
@@ -134,6 +136,35 @@ def keyUpdate():
                     else:
                         gv.GameF.get(Nx, Ny).key = 1
 
+            if event.button == 3:
+                if gv.mobile == True:
+                    if pygame.mouse.get_pos() >= (size[0] - 100, 0) and pygame.mouse.get_pos() <= (size[0], 50):
+                        if gv.isRunning:
+                            gv.isRunning = False
+
+                        else:
+                            gv.isRunning = True
+
+                    else:
+                        (Mx, My) = pygame.mouse.get_pos()
+                        Mx, My = Mx - gv.ssx, My - gv.ssy
+                        Nx, Ny = math.ceil(Mx / gv.sizeFactor), math.ceil(My / gv.sizeFactor)
+                        if gv.GameF.get(Nx, Ny).key == 2:
+                            gv.GameF.get(Nx, Ny).key = 0
+
+                        else:
+                            gv.GameF.get(Nx, Ny).key = 2
+
+                else:
+                    (Mx, My) = pygame.mouse.get_pos()
+                    Mx, My = Mx - gv.ssx, My - gv.ssy
+                    Nx, Ny = math.ceil(Mx / gv.sizeFactor), math.ceil(My / gv.sizeFactor)
+                    if gv.GameF.get(Nx, Ny).key == 2:
+                        gv.GameF.get(Nx, Ny).key = 0
+
+                    else:
+                        gv.GameF.get(Nx, Ny).key = 2
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if gv.isRunning == False:
@@ -152,6 +183,10 @@ def keyUpdate():
             if event.key == pygame.K_c:
                 gv.generations = 0
                 nodes = gv.GameF.find(1)
+                for node in nodes:
+                    node.key = 0
+
+                nodes = gv.GameF.find(2)
                 for node in nodes:
                     node.key = 0
 
@@ -226,6 +261,16 @@ def keyUpdate():
                 else:
                     gv.showFPS = True
 
+            if event.key == pygame.K_F2:
+                nodes = gv.GameF.find(2)
+                for node in nodes:
+                    node.key = 0
+
+            if event.key == pygame.K_F3:
+                nodes = gv.GameF.find(1)
+                for node in nodes:
+                    node.key = 0
+
             if event.key == pygame.K_ESCAPE:
                 pygame.display.quit(), sys.exit()
 
@@ -253,6 +298,10 @@ def draw():
     for node in gv.GameF.Nodes:
         if gv.GameF.get(node.Xm, node.Ym).key == 1:
             pygame.draw.rect(screen, color2, ((node.Xm - 1) * gv.sizeFactor + gv.ssx, (node.Ym - 1) * gv.sizeFactor + gv.ssy, gv.sizeFactor + 1, gv.sizeFactor + 1))
+
+        if gv.GameF.get(node.Xm, node.Ym).key == 2:
+            pygame.draw.rect(screen, color3, ((node.Xm - 1) * gv.sizeFactor + gv.ssx, (node.Ym - 1) * gv.sizeFactor + gv.ssy, gv.sizeFactor + 1, gv.sizeFactor + 1))
+
     if gv.showGrid:
         for column in range(1, gv.width):
             pygame.draw.line(screen, "gray", (column * gv.sizeFactor + gv.ssx, 0 + gv.ssy), (column * gv.sizeFactor + gv.ssx, gv.height * gv.sizeFactor + gv.ssy))
@@ -283,7 +332,7 @@ def draw():
         screen.blit(generationDisplay, (size[0] / 2 - 50, 0))
 
     if gv.showInstructions:
-        Instructions = " Escape to close,\n Click to place a cell or destroy a cell, Spacebar to start the game,\n f to go frame by frame,\n s to save,\n l to load,\n hit c to clear all cells,\n hit e, g, or f1 to toggle the generation display, grid or frames per second, hit n to stop the music, hit p to start the music again, hit i to invert the color scheme,\n scroll to zoom,\n hit r to reset zoom scale,\n hit m to stop being in mobile mode,\n hit the blue button to start or stop,\n and finally, hit h to toggle the instructions."
+        Instructions = " Escape to close,\n Left click to place a cell or destroy a cell,\n right click to place god cell or destroy a god cell,\n Spacebar to start the game,\n f to go frame by frame,\n s to save,\n l to load,\n hit c to clear all cells,\n hit f2 and f3 to clear god cells and cells respectivly,\n hit e, g, or f1 to toggle the generation display, grid or frames per second, hit n to stop the music, hit p to start the music again, hit i to invert the color scheme,\n scroll to zoom,\n hit r to reset zoom scale,\n hit m to stop being in mobile mode,\n hit the blue button to start or stop,\n and finally, hit h to toggle the instructions."
         blit_text(screen, Instructions, (gv.width - 100, 20), gv.font)
 
     if gv.mobile == True:
